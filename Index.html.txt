@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tra cứu biển số</title>
+</head>
+<body>
+  <h1>Tra cứu biển số</h1>
+  <input type="text" id="biensoxe" placeholder="Nhập biển số...">
+  <button onclick="traCuu()">Tra cứu</button>
+  <div id="ketqua"></div>
+
+  <script>
+    async function traCuu() {
+      const bs = document.getElementById("biensoxe").value.trim();
+      const ketqua = document.getElementById("ketqua");
+      ketqua.innerHTML = "Đang tra cứu...";
+
+      try {
+        const response = await fetch(`https://script.google.com/macros/s/AKfycby5hz9NPHf-ZpVgoQDVy4k3ps6oOJ_M13Xe8iW95XehN66FAEXqBkSGc0oeIKPocS8t/exec?biensoxe=${encodeURIComponent(bs)}`);
+        const data = await response.json();
+
+        if (data.length === 0) {
+          ketqua.innerHTML = "<p>Không tìm thấy dữ liệu.</p>";
+        } else {
+          ketqua.innerHTML = data.map(item => `
+            <div style="border:1px solid #ccc;padding:10px;margin:10px 0;">
+              <p><strong>Biển số:</strong> ${item.biensoxe}</p>
+              <p><strong>Tên xã:</strong> ${item.tenxa}</p>
+              <p><strong>Người nhập:</strong> ${item.nguoinhap}</p>
+              <p><strong>Ngày nhập:</strong> ${item.ngaynhap}</p>
+            </div>
+          `).join('');
+        }
+      } catch (err) {
+        ketqua.innerHTML = "<p>Lỗi khi lấy dữ liệu.</p>";
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>
